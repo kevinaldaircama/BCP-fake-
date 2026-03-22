@@ -180,24 +180,9 @@ window.checkToken = function () {
 // 🚪 Redirigir si ya está logueado
 window.onload = function () {
     if (localStorage.getItem("tokenUsed")) {
-        window.location.href = "login";
+        window.location.href = "home";
     }
 };
-</script>
-
-<!-- ===================================================== -->
-<!-- 🔔 ONESIGNAL -->
-<!-- ===================================================== -->
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(async function(OneSignal) {
-  await OneSignal.init({
-    appId: "1226490d-9cc3-4de0-b189-b627eab1a1ac",
-    notifyButton: { enable: true },
-  });
-  console.log("✅ OneSignal listo");
-});
 </script>
 
 </body>
