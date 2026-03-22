@@ -1,0 +1,22 @@
+{
+  "name": "Banca Móvil BCP",
+  "short_name": "BCP",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#01256f",
+  "theme_color": "#01256f",
+  "orientation": "portrait",
+  "version": "3.0",
+  "icons": [
+    {
+      "src": "images/app_icon_xxxhdpi.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/app_icon_xxxhdpi.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

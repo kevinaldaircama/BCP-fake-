@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confirmación</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#01256f" />
+  <link rel="icon" type="images/png" href="images/app_icon_xxxhdpi.png"> 
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Arial,sans-serif}
+body{background:#fff;display:flex;justify-content:center}
+.container{max-width:400px;width:100%;min-height:100vh;background:#fff;display:flex;flex-direction:column}
+.header{display:flex;align-items:center;padding:15px;border-bottom:1px solid #e6e6e6}
+.back-arrow{font-size:22px;cursor:pointer;margin-right:10px}
+.header-title{font-size:18px;font-weight:500}
+
+.amount-section{text-align:center;padding:25px 0}
+.amount{font-size:36px;font-weight:600;color:#1f3f74}
+.amount-label{color:#999;margin-top:5px;font-size:14px}
+
+.details{border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;padding:10px 20px}
+.row{display:flex;justify-content:space-between;padding:12px 0}
+.row-label{color:#7f8c8d;font-size:14px}
+.row-value{text-align:right;font-size:14px}
+.small{display:block;color:#7f8c8d;font-size:13px;margin-top:3px}
+
+.description{padding:15px 20px}
+.description textarea{
+width:100%;height:60px;padding:10px;
+border:1px solid #dcdcdc;border-radius:8px;
+resize:none;outline:none
+}
+
+.char-count{text-align:right;font-size:12px;color:#999;margin-top:5px}
+
+.button-section{padding:20px}
+.confirm-btn{
+width:100%;
+background:#ff7f00;
+color:#fff;
+font-size:16px;
+padding:14px;
+border:none;
+border-radius:25px;
+cursor:pointer
+}
+
+.loading-modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.8);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999
+}
+
+.loader-wrapper{
+position:relative;
+width:100px;
+height:100px
+}
+
+.loader-circle{
+position:absolute;
+width:100px;
+height:100px;
+border:6px solid transparent;
+border-top:6px solid #ff7f00;
+border-radius:50%;
+animation:spin 1.2s linear infinite
+}
+
+.loader-logo{
+width:50px;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%)
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<div class="back-arrow" onclick="history.back()">←</div>
+<div class="header-title">Confirmación</div>
+</div>
+
+<div class="amount-section">
+<div class="amount" id="montoFinal">S/ 0.00</div>
+<div class="amount-label">Monto total</div>
+</div>
+
+<div class="details">
+
+<div class="row">
+<div class="row-label">Enviado a</div>
+<div class="row-value">
+<span id="nombreDestinatario">---</span>
+<span class="small" id="numeroDestinatario">****0000</span>
+</div>
+</div>
+
+<div class="row">
+<div class="row-label">Desde</div>
+<div class="row-value">
+Cuenta Digital Soles
+<span class="small" id="cuentaOrigen">****0000</span>
+</div>
+</div>
+
+</div>
+
+<div class="description">
+<textarea maxlength="100"></textarea>
+<div class="char-count">0/100</div>
+</div>
+
+<div class="button-section">
+<button class="confirm-btn" id="btnConfirmar">
+Confirmar
+</button>
+</div>
+
+</div>
+
+
+<div class="loading-modal" id="loadingModal">
+<div class="loader-wrapper">
+<div class="loader-circle"></div>
+<img src="images/lg_favicon_light.svg" class="loader-logo">
+</div>
+</div>
+
+
+
+<script type="module">
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+
+import {
+getDatabase,
+ref,
+get,
+set,
+update,
+push
+} from
+"https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+
+const firebaseConfig={
+apiKey: "AIzaSyDuF8oL5UWaIXw_vt_HdAsiKC4I3irj8rM",
+    authDomain: "bcpf-ba4cd.firebaseapp.com",
+    databaseURL: "https://bcpf-ba4cd-default-rtdb.firebaseio.com",
+    projectId: "bcpf-ba4cd",
+    storageBucket: "bcpf-ba4cd.firebasestorage.app",
+    messagingSenderId: "1073055247962",
+    appId: "1:1073055247962:web:88f888730ee3577dcb7263",
+    measurementId: "G-TCFHF3FMKQ"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+
+
+
+/* valores guardados */
+
+const nombre =
+localStorage.getItem("nombre") || "Usuario";
+
+const numero =
+localStorage.getItem("numero") || "0000";
+
+const origenID =
+localStorage.getItem("origen") || "0000";
+
+const numeroCuenta =
+localStorage.getItem("numeroCuenta") || "0000";
+
+const monto =
+parseFloat(
+localStorage.getItem("montoTransferencia") || "0"
+);
+
+const destino =
+localStorage.getItem("destinoCuenta") || "----";
+
+
+
+/* mostrar */
+
+document.getElementById("nombreDestinatario")
+.textContent = nombre;
+
+document.getElementById("numeroDestinatario")
+.textContent = "****" + numero;
+
+document.getElementById("cuentaOrigen")
+.textContent = "****" + numeroCuenta;
+
+document.getElementById("montoFinal")
+.textContent = "S/ " + monto.toFixed(2);
+
+
+
+/* contador */
+
+const textarea =
+document.querySelector("textarea");
+
+const count =
+document.querySelector(".char-count");
+
+textarea.oninput = () =>
+count.textContent =
+textarea.value.length + "/100";
+
+
+
+/* confirmar */
+
+const btn =
+document.getElementById("btnConfirmar");
+
+const modal =
+document.getElementById("loadingModal");
+
+
+btn.onclick = async ()=>{
+
+modal.style.display="flex";
+
+const numeroOperacion =
+Math.floor(
+10000000 +
+Math.random()*90000000
+);
+
+const fecha =
+new Date().toLocaleString("es-PE");
+
+
+
+/* guardar transferencia */
+
+await set(
+ref(db,
+`TRAN YAPE/${numeroOperacion}`),
+{
+fecha,
+monto,
+cuenta_origen:numeroCuenta,
+cuenta_destino:numero,
+nombre_destinatario:nombre,
+numero_operacion:numeroOperacion
+}
+);
+
+
+
+/* actualizar saldo */
+
+const cuentaRef =
+ref(db,
+`usuarios/${origenID}`);
+
+const snap =
+await get(cuentaRef);
+
+if(snap.exists()){
+
+const data =
+snap.val();
+
+const nuevoSaldo =
+(parseFloat(data.saldo)||0)
+- monto;
+
+await update(
+cuentaRef,
+{saldo:nuevoSaldo}
+);
+
+}
+
+
+
+/* historial */
+
+await push(
+ref(db,
+`usuarios/${origenID}/movimientos`),
+{
+nombre:"TRAN_CTAS_TERC_BM",
+destino:numero,
+monto,
+fecha,
+tipo:"salida",
+operacion:numeroOperacion
+}
+);
+
+
+
+/* comprobante */
+
+localStorage.setItem(
+"comprobante_monto",
+monto.toFixed(2)
+);
+
+localStorage.setItem(
+"comprobante_destinatario",
+nombre
+);
+
+localStorage.setItem(
+"comprobante_cuenta",
+"****"+numero
+);
+
+localStorage.setItem(
+"numeroCuenta",
+numeroCuenta
+);
+
+
+
+setTimeout(()=>{
+
+modal.style.display="none";
+
+location.href="baucher.html";
+
+},3000);
+
+};
+
+</script>
+
+</body>
+</html>

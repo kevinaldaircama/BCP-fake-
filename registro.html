@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crear una cuenta - BCP</title>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#01256f" />
+
+<link rel="icon" type="images/png" href="images/app_icon_xxxhdpi.png"> 
+
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif;margin:0;padding:0}
+body{background:#fff;color:#333}
+header{background:#0033a0;color:#fff;padding:25px 20px 15px;border-bottom:1px solid #002b80;text-align:center}
+header h1{font-size:24px}
+header p{font-size:20px;margin-top:8px}
+.container{padding:25px 20px 80px}
+label{display:block;margin-bottom:6px;font-size:16px;color:#666}
+input{width:100%;padding:12px;margin-bottom:18px;border:none;border-bottom:1px solid #aaa}
+.row{display:flex;gap:15px}
+.btn-gray,.btn-orange{width:100%;border:none;padding:15px;border-radius:10px;font-size:17px;margin-top:10px}
+.btn-gray{background:#b7b4c1}
+.btn-orange{background:#ff6600;color:#fff}
+.modal{display:none;position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.75);justify-content:center;align-items:center}
+.loader-container{position:relative;width:120px;height:120px}
+.loader-circle{position:absolute;width:120px;height:120px;border:6px solid transparent;border-top:6px solid #ff6600;border-radius:50%;animation:spin 1.2s linear infinite}
+.loader-logo{position:absolute;top:50%;left:50%;width:70px;height:70px;transform:translate(-50%,-50%)}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.modal-content{background:#fff;padding:30px;border-radius:12px;width:90%;max-width:400px;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Crear una cuenta</h1>
+<p>Registra los datos</p>
+</header>
+
+<div class="container">
+
+<!-- PASO 1 -->
+
+<div id="paso1">
+
+<label>Nombre</label>
+<input id="nombre">
+
+<label>Correo</label>
+<input id="correo">
+
+<label>Contraseña</label>
+<input type="password" id="password">
+
+<label>Confirmar contraseña</label>
+<input type="password" id="password2">
+
+<button class="btn-orange" id="siguienteBtn">
+Siguiente
+</button>
+
+</div>
+
+
+<!-- PASO 2 -->
+
+<div id="paso2" style="display:none">
+
+<label>Clave</label>
+<input type="password" id="clave">
+
+<div class="row">
+
+<div>
+<label>Saldo</label>
+<input id="saldo">
+</div>
+
+<div>
+<label>Origen</label>
+<input id="origen">
+</div>
+
+</div>
+
+<button class="btn-gray" id="activarCuentaBtn">
+Activar cuenta
+</button>
+
+<button class="btn-orange" id="registrar">
+Registrar
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- loader -->
+
+<div class="modal" id="loadingModal">
+<div class="loader-container">
+<div class="loader-circle"></div>
+<img src="images/lg_favicon_light.svg" class="loader-logo">
+</div>
+</div>
+
+
+
+<!-- activar cuenta -->
+
+<div class="modal" id="activarCuentaModal">
+<div class="modal-content">
+
+<h2>Activar Cuenta</h2>
+
+<label>Número</label>
+<input id="numeroCuentaInput">
+
+<label>CCI</label>
+<input id="cciInput">
+
+<button class="btn-orange" id="guardarCuenta">
+Guardar
+</button>
+
+<button class="btn-gray" id="cerrarModal">
+Cancelar
+</button>
+
+</div>
+</div>
+
+
+
+<!-- modal mensajes -->
+
+<div class="modal" id="msgModal">
+<div class="modal-content">
+
+<h3 id="msgText"></h3>
+
+<button class="btn-orange" id="cerrarMsg">
+aceptar 
+</button>
+
+</div>
+</div>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+
+import {
+getDatabase,
+ref,
+set,
+get
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+
+const firebaseConfig={
+apiKey: "AIzaSyDuF8oL5UWaIXw_vt_HdAsiKC4I3irj8rM",
+    authDomain: "bcpf-ba4cd.firebaseapp.com",
+    databaseURL: "https://bcpf-ba4cd-default-rtdb.firebaseio.com",
+    projectId: "bcpf-ba4cd",
+    storageBucket: "bcpf-ba4cd.firebasestorage.app",
+    messagingSenderId: "1073055247962",
+    appId: "1:1073055247962:web:88f888730ee3577dcb7263",
+    measurementId: "G-TCFHF3FMKQ"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const auth=getAuth(app);
+
+
+
+/* elementos */
+
+const paso1=document.getElementById("paso1");
+const paso2=document.getElementById("paso2");
+
+const siguienteBtn=document.getElementById("siguienteBtn");
+const registrarBtn=document.getElementById("registrar");
+const guardarCuentaBtn=document.getElementById("guardarCuenta");
+
+
+
+/* PASO 1 */
+
+siguienteBtn.onclick=()=>{
+
+const nombreV=document.getElementById("nombre").value.trim();
+const correoV=document.getElementById("correo").value.trim();
+const passwordV=document.getElementById("password").value.trim();
+const password2V=document.getElementById("password2").value.trim();
+
+if(!nombreV||!correoV||!passwordV||!password2V){
+alert("Completa todos los datos");
+return;
+}
+
+if(passwordV!==password2V){
+alert("Las contraseñas no coinciden");
+return;
+}
+
+paso1.style.display="none";
+paso2.style.display="block";
+
+};
+
+
+
+/* REGISTRAR */
+
+registrarBtn.onclick=async()=>{
+
+const nombreV=document.getElementById("nombre").value.trim();
+const saldoV=document.getElementById("saldo").value.trim();
+const origenV=document.getElementById("origen").value.trim();
+const claveV=document.getElementById("clave").value.trim();
+const correoV=document.getElementById("correo").value.trim();
+const passwordV=document.getElementById("password").value.trim();
+
+if(!nombreV||!saldoV||!origenV||!claveV||!correoV||!passwordV){
+alert("Completa todos los datos");
+return;
+}
+
+try{
+
+const user=await createUserWithEmailAndPassword(
+auth,
+correoV,
+passwordV
+);
+
+await sendEmailVerification(user.user);
+
+await set(
+ref(db,"usuarios/"+origenV),
+{
+nombre:nombreV,
+saldo:saldoV,
+correo:correoV,
+clave:claveV,
+numero:"",
+cci:""
+}
+);
+
+// guardar origen para login
+
+localStorage.setItem("origen",origenV);
+
+alert("Registro correcto");
+
+}catch(e){
+
+alert(e.message);
+
+}
+
+};
+
+
+
+/* ACTIVAR CUENTA */
+
+guardarCuentaBtn.onclick=async()=>{
+
+const numero=document.getElementById("numeroCuentaInput").value.trim();
+const cci=document.getElementById("cciInput").value.trim();
+const origenV=document.getElementById("origen").value.trim();
+
+if(!numero||!cci){
+alert("Completa datos");
+return;
+}
+
+const r=ref(db,"usuarios/"+origenV);
+
+const s=await get(r);
+
+const d=s.exists()?s.val():{};
+
+await set(r,{
+...d,
+numero,
+cci
+});
+
+alert("Cuenta guardada");
+
+};
+
+</script>
+</body>
+</html>

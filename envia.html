@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seleccionar Destino</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#01256f" />
+<link rel="icon" type="images/png" href="images/app_icon_xxxhdpi.png"> 
+
+<style>
+  * { box-sizing: border-box; font-family: 'Arial', sans-serif; }
+  body { margin: 0; background: #fff; }
+
+  .title-bar {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    color: #555;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .option-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    justify-content: center;
+  }
+
+  .option-card:hover {
+    transform: scale(1.02);
+    background-color: #f8f8f8;
+  }
+
+  .option-card span {
+    font-size: 17px;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+  }
+
+  /* Indicador de sección activa */
+  .modal-carga {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .activo-texto {
+    padding: 20px 30px;
+    background-color: #ff7b00;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="title-bar">
+  <span>Seleccionar Destino</span>
+  <button class="close-btn" onclick="window.history.back()">×</button>
+</div>
+
+<div class="options" id="lista-destinos">
+  <!-- Solo se cargará el último contacto guardado -->
+</div>
+
+<!-- Indicador de sección activa -->
+<div class="modal-carga" id="modal-carga">
+  <div class="activo-texto">Sección activa...</div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDuF8oL5UWaIXw_vt_HdAsiKC4I3irj8rM",
+    authDomain: "bcpf-ba4cd.firebaseapp.com",
+    databaseURL: "https://bcpf-ba4cd-default-rtdb.firebaseio.com",
+    projectId: "bcpf-ba4cd",
+    storageBucket: "bcpf-ba4cd.firebasestorage.app",
+    messagingSenderId: "1073055247962",
+    appId: "1:1073055247962:web:88f888730ee3577dcb7263",
+    measurementId: "G-TCFHF3FMKQ"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const lista = document.getElementById('lista-destinos');
+const modalCarga = document.getElementById('modal-carga');
+
+// Traer solo el último contacto guardado
+db.ref('contactos')
+  .limitToLast(1)
+  .once('value')
+  .then(snapshot => {
+    lista.innerHTML = '';
+    snapshot.forEach(child => {
+      const data = child.val();
+      const contactId = child.key;
+
+      const card = document.createElement('div');
+      card.className = 'option-card';
+      card.innerHTML = `<span>${data.destino}</span>`;
+
+      card.addEventListener('click', () => {
+        const params = new URLSearchParams();
+        params.set('id', contactId);
+
+        modalCarga.style.display = 'flex'; // Mostrar indicador de sección activa
+        setTimeout(() => {
+          window.location.href = `envio.html?${params.toString()}`;
+        }, 1500);
+      });
+
+      lista.appendChild(card);
+    });
+  });
+</script>
+
+</body>
+</html>

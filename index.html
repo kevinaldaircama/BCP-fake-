@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Acceso Privado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#01256f" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="images/png" href="images/app_icon_xxxhdpi.png">
+<style>
+:root {
+    --c1: #22d3ee;
+    --c2: #6366f1;
+    --c3: #ec4899;
+    --text: #0f172a;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(120deg, var(--c1), var(--c2), var(--c3));
+    background-size: 300% 300%;
+    animation: bgMove 16s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.card {
+    width: 100%;
+    max-width: 380px;
+    padding: 34px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 18px;
+    box-shadow: 0 40px 80px rgba(0,0,0,.25);
+    text-align: center;
+}
+
+h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 22px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px solid #cbd5f5;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--c2), var(--c3));
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.msg {
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.watermark {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #64748b;
+    opacity: 0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>bcp fake</h1>
+    <div class="subtitle">acceso seguro</div>
+
+    <input id="token" placeholder="TOKEN DE ACCESO">
+
+    <button onclick="checkToken()">Continuar</button>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="watermark">
+        Desarrollador: <strong>Kevin tech tutorials</strong> · 
+        Dueño: <strong>VENTAS MC TUTO</strong> · 
+        canal: <strong>@appsfake_oficial</strong>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- 🔥 FIREBASE + LOGICA DE TOKEN -->
+<!-- ===================================================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDuF8oL5UWaIXw_vt_HdAsiKC4I3irj8rM",
+    authDomain: "bcpf-ba4cd.firebaseapp.com",
+    databaseURL: "https://bcpf-ba4cd-default-rtdb.firebaseio.com",
+    projectId: "bcpf-ba4cd",
+    storageBucket: "bcpf-ba4cd.firebasestorage.app",
+    messagingSenderId: "1073055247962",
+    appId: "1:1073055247962:web:88f888730ee3577dcb7263",
+    measurementId: "G-TCFHF3FMKQ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// 🔑 Verificar token
+window.checkToken = function () {
+    const token = document.getElementById("token").value.trim();
+    const msg = document.getElementById("msg");
+
+    if (!token) {
+        msg.style.color = "#dc2626";
+        msg.textContent = "Introduce un token";
+        return;
+    }
+
+    const tokenRef = ref(db, "tokens/" + token);
+
+    get(tokenRef).then(snapshot => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+
+            if (data.used) {
+                msg.style.color = "#dc2626";
+                msg.textContent = "Este token ya fue usado";
+            } else {
+                update(tokenRef, { used: true }).then(() => {
+                    localStorage.setItem("tokenUsed", token);
+                    msg.style.color = "#16a34a";
+                    msg.textContent = `Bienvenido ${data.userName}`;
+                    setTimeout(() => window.location.href = "inicio", 1000);
+                });
+            }
+        } else {
+            msg.style.color = "#dc2626";
+            msg.textContent = "Token inválido";
+        }
+    }).catch(err => {
+        msg.style.color = "#dc2626";
+        msg.textContent = "Error al verificar token";
+        console.error(err);
+    });
+};
+
+// 🚪 Redirigir si ya está logueado
+window.onload = function () {
+    if (localStorage.getItem("tokenUsed")) {
+        window.location.href = "login";
+    }
+};
+</script>
+
+<!-- ===================================================== -->
+<!-- 🔔 ONESIGNAL -->
+<!-- ===================================================== -->
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "1226490d-9cc3-4de0-b189-b627eab1a1ac",
+    notifyButton: { enable: true },
+  });
+  console.log("✅ OneSignal listo");
+});
+</script>
+
+</body>
+  </html>

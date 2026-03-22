@@ -1,0 +1,226 @@
+<!DOCTYPE html>  
+<html lang="es">  
+<head>  
+<meta charset="UTF-8" />  
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+<title>Comprobante de Transferencia</title>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#01256f" />
+<link rel="icon" type="images/png" href="images/app_icon_xxxhdpi.png">   
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+body{background:#fff;color:#333}
+
+.container{
+max-width:400px;
+margin:auto;
+text-align:center;
+padding-top:25px;
+}
+
+.logo{width:90px;margin:auto}
+
+.amount{
+font-size:32px;
+color:#004b93;
+margin:10px 0;
+}
+
+.date{color:#777;margin-bottom:20px}
+
+.details{
+padding:15px;
+font-size:14px
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px
+}
+
+.right-text{
+text-align:right;
+display:flex;
+flex-direction:column;
+align-items:flex-end
+}
+
+.divider{
+border-top:1px solid #ddd;
+margin:10px 0
+}
+
+.button{
+background:#ff7b00;
+color:#fff;
+border:none;
+border-radius:25px;
+padding:12px;
+display:block;
+width:90%;
+margin:10px auto;
+text-align:center;
+text-decoration:none
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="images/IMG_20251017_194447.jpg" class="logo">
+
+<div class="amount" id="comprobante-monto">
+S/ 0.00
+</div>
+
+<div class="date" id="fecha-actual"></div>
+
+</div>
+
+
+<div class="details">
+
+<div class="row">
+<strong>Titular</strong>
+<div class="right-text">
+<span id="comprobante-titular">—</span>
+</div>
+</div>
+
+<div class="divider"></div>
+
+
+<div class="row">
+<strong>Enviado a</strong>
+<div class="right-text">
+
+<span id="comprobante-nombre">Empresa</span>
+<span id="comprobante-cuenta">Servicio</span>
+<span id="comprobante-codigo">Código</span>
+
+</div>
+</div>
+
+<div class="divider"></div>
+
+
+<div class="row">
+<strong>Desde</strong>
+<div class="right-text">
+
+<span>Cuenta Digital Soles</span>
+<span id="cuentaOrigen">****0000</span>
+
+</div>
+</div>
+
+<div class="divider"></div>
+
+
+<div class="row">
+<strong>Número de operación</strong>
+<div class="right-text">
+<span id="comprobante-operacion">00000000</span>
+</div>
+</div>
+
+</div>
+
+
+
+<a href="servicios" class="button">
+Realiza otra pago de servicios
+</a>
+
+<a href="inicio" class="button">
+Ir al inicio
+</a>
+
+
+
+<script>
+
+// fecha
+
+const fecha = new Date()
+
+let h = fecha.getHours()
+const m = fecha.getMinutes().toString().padStart(2,"0")
+
+const ampm = h>=12?"pm":"am"
+
+h = h%12 || 12
+
+document.getElementById("fecha-actual")
+.textContent =
+fecha.toLocaleDateString("es-ES")
++ " - " + h + ":" + m + " " + ampm
+
+
+
+// datos guardados
+
+const monto =
+localStorage.getItem("comprobante_monto") || "0"
+
+const empresa =
+localStorage.getItem("nombreEmpresa") || "-"
+
+const servicio =
+localStorage.getItem("nombreServicio") || "-"
+
+const codigo =
+localStorage.getItem("codigoServicio") || "-"
+
+const titular =
+localStorage.getItem("titular") || "-"
+
+const numeroCuenta =
+localStorage.getItem("numeroCuenta") || "0000"
+
+
+const operacion =
+localStorage.getItem("comprobante_operacion")
+||
+Math.floor(10000000+Math.random()*90000000)
+
+
+
+// mostrar
+
+document.getElementById("comprobante-monto")
+.textContent =
+"S/ " + parseFloat(monto).toFixed(2)
+
+document.getElementById("comprobante-nombre")
+.textContent = empresa
+
+document.getElementById("comprobante-cuenta")
+.textContent = servicio
+
+document.getElementById("comprobante-codigo")
+.textContent = codigo
+
+document.getElementById("comprobante-titular")
+.textContent = titular
+
+document.getElementById("comprobante-operacion")
+.textContent = operacion
+
+
+// 🔥 CUENTA DINÁMICA
+
+document.getElementById("cuentaOrigen")
+.textContent =
+"****" + numeroCuenta.slice(-4)
+
+
+</script>
+
+</body>
+</html>
