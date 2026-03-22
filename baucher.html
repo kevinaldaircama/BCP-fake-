@@ -6,150 +6,28 @@
   <title>Comprobante de Transferencia</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#01256f" />
-
-  <!-- Favicon -->
   <link rel="icon" type="images/png" href="images/app_icon_xxxhdpi.png"> 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      background-color: #ffffff;
-      color: #333;
-    }
-
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-      background-color: #ffffff;
-      text-align: center;
-      padding-top: 25px;
-    }
-
-    .logo {
-      width: 90px;
-      margin: 0 auto 15px;
-      display: block;
-    }
-
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #333;
-    }
-
-    .amount {
-      font-size: 32px;
-      font-weight: 600;
-      color: #004b93;
-      margin-bottom: 10px;
-    }
-
-    .date {
-      font-size: 14px;
-      color: #777;
-      margin-bottom: 20px;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-      margin-bottom: 20px;
-    }
-
-    .action {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #ff7b00;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .action img {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 5px;
-    }
-
-    .details {
-      text-align: left;
-      padding: 15px;
-      font-size: 14px;
-      background-color: #ffffff;
-    }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 10px;
-    }
-
-    .row strong {
-      font-weight: bold;
-    }
-
-    .right-text {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    .divider {
-      border-top: 1px solid #ddd;
-      margin: 10px 0;
-    }
-
-    .banner {
-      width: 95%;
-      margin: 15px auto;
-      text-align: center;
-    }
-
-    .banner img {
-      width: 100%;
-      max-width: 380px;
-      border-radius: 8px;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .button {
-      background-color: #ff7b00;
-      color: #fff;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 12px 20px;
-      width: 90%;
-      max-width: 400px;
-      margin: 10px auto 10px auto;
-      display: block;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-    }
-
-    .link-inicio {
-      display: block;
-      text-align: center;
-      margin-top: 8px;
-      font-size: 14px;
-      color: #004b93;
-      text-decoration: none;
-    }
-
-    .link-inicio:hover {
-      text-decoration: underline;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background-color: #ffffff; color: #333; }
+    .container { max-width: 400px; margin: 0 auto; background-color: #ffffff; text-align: center; padding-top: 25px; }
+    .logo { width: 90px; margin: 0 auto 15px; display: block; }
+    .title { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #333; }
+    .amount { font-size: 32px; font-weight: 600; color: #004b93; margin-bottom: 10px; }
+    .date { font-size: 14px; color: #777; margin-bottom: 20px; }
+    .actions { display: flex; justify-content: center; gap: 60px; margin-bottom: 20px; }
+    .action { display: flex; flex-direction: column; align-items: center; color: #ff7b00; font-size: 14px; cursor: pointer; }
+    .action img { width: 24px; height: 24px; margin-bottom: 5px; }
+    .details { text-align: left; padding: 15px; font-size: 14px; background-color: #ffffff; }
+    .row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .row strong { font-weight: bold; }
+    .right-text { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+    .divider { border-top: 1px solid #ddd; margin: 10px 0; }
+    .banner { width: 95%; margin: 15px auto; text-align: center; }
+    .banner img { width: 100%; max-width: 380px; border-radius: 8px; display: block; margin: 0 auto; }
+    .button { background-color: #ff7b00; color: #fff; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; padding: 12px 20px; width: 90%; max-width: 400px; margin: 10px auto 10px auto; display: block; cursor: pointer; text-decoration: none; text-align: center; }
+    .link-inicio { display: block; text-align: center; margin-top: 8px; font-size: 14px; color: #004b93; text-decoration: none; }
+    .link-inicio:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -160,11 +38,11 @@
     <div class="date" id="fecha-actual"></div>
 
     <div class="actions">
-      <div class="action">
+      <div class="action" id="descargarBtn">
         <img src="images/descargar-icon.svg" alt="Descargar">
         <span>Descargar</span>
       </div>
-      <div class="action">
+      <div class="action" id="compartirBtn">
         <img src="images/compartir-cop.svg" alt="Compartir">
         <span>Compartir</span>
       </div>
@@ -188,7 +66,7 @@
       <strong>Desde</strong>
       <div class="right-text">
         <span>Cuenta Digital Soles</span>
-<span id="cuenta-origen">****</span>
+        <span id="cuenta-origen">****</span>
       </div>
     </div>
 
@@ -207,51 +85,102 @@
     <img src="images/banner.jpg" alt="Banner pequeño">
   </div>
 
-  <!-- Botón que lleva a otra página -->
   <a href="transferir" class="button">Realiza otra transferencia</a>
-
-  <!-- Enlace de inicio -->
   <a href="inicio" class="link-inicio">Ir al inicio</a>
 
   <script>
-  // 🕒 Fecha y hora actual
-  const fechaElemento = document.getElementById('fecha-actual');
-  const ahora = new Date();
-  const opcionesFecha = {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  };
+    // 🕒 Fecha y hora actual
+    const fechaElemento = document.getElementById('fecha-actual');
+    const ahora = new Date();
+    const opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    let horas = ahora.getHours();
+    const minutos = ahora.getMinutes().toString().padStart(2,'0');
+    const ampm = horas >= 12 ? 'pm' : 'am';
+    horas = horas % 12 || 12;
+    const fechaFormateada = ahora.toLocaleDateString('es-ES', opcionesFecha);
+    fechaElemento.textContent = `${fechaFormateada} - ${horas}:${minutos} ${ampm}`;
 
-  let horas = ahora.getHours();
-  const minutos = ahora.getMinutes().toString().padStart(2, '0');
-  const ampm = horas >= 12 ? 'pm' : 'am';
-  horas = horas % 12;
-  horas = horas ? horas : 12;
+    // 📝 Autocompletar datos desde localStorage
+    const monto = localStorage.getItem('comprobante_monto') || "0.00";
+    const destinatario = localStorage.getItem('comprobante_destinatario') || "—";
+    const cuenta = localStorage.getItem('comprobante_cuenta') || "****";
+    const cuentaOrigen = localStorage.getItem('numeroCuenta') || "0000";
 
-  const fechaFormateada = ahora.toLocaleDateString('es-ES', opcionesFecha);
-  fechaElemento.textContent = `${fechaFormateada} - ${horas}:${minutos} ${ampm}`;
+    // Generar número de operación aleatorio de 8 dígitos
+    const numeroOperacion = Math.floor(10000000 + Math.random() * 90000000);
 
-  // 📝 Autocompletar datos desde localStorage
-  const monto = localStorage.getItem('comprobante_monto') || "0.00";
-  const destinatario = localStorage.getItem('comprobante_destinatario') || "—";
-  const cuenta = localStorage.getItem('comprobante_cuenta') || "****";
+    document.getElementById('comprobante-monto').textContent = `S/ ${parseFloat(monto).toFixed(2)}`;
+    document.getElementById('comprobante-nombre').textContent = destinatario;
+    document.getElementById('comprobante-cuenta').textContent = cuenta;
+    document.getElementById('cuenta-origen').textContent = "****" + cuentaOrigen;
+    document.getElementById('comprobante-operacion').textContent = numeroOperacion;
 
-  // Generar número de operación aleatorio de 8 dígitos
-  const numeroOperacion = Math.floor(10000000 + Math.random() * 90000000);
+    // ===== Descargar y compartir completo =====
+    const descargarBtn = document.getElementById('descargarBtn');
+    const compartirBtn = document.getElementById('compartirBtn');
 
-  document.getElementById('comprobante-monto').textContent = `S/ ${parseFloat(monto).toFixed(2)}`;
-  document.getElementById('comprobante-nombre').textContent = destinatario;
-  document.getElementById('comprobante-cuenta').textContent = cuenta;
-  document.getElementById('comprobante-operacion').textContent = numeroOperacion;
-// cuenta origen desde localStorage
+    function generarHTMLComprobante() {
+      const container = document.querySelector('.container').cloneNode(true);
+      const details = document.querySelector('.details').cloneNode(true);
+      const banner = document.querySelector('.banner').cloneNode(true);
 
-const cuentaOrigen =
-localStorage.getItem("numeroCuenta") || "0000";
+      return `
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Comprobante de Transferencia</title>
+          <style>
+            body { font-family: Arial,sans-serif; background:#fff; padding:20px; }
+            .container, .details, .banner { margin-bottom: 15px; }
+            .title { font-size: 18px; font-weight: bold; color:#333; }
+            .amount { font-size: 28px; color:#004b93; font-weight: bold; }
+            .date { font-size: 14px; color:#555; margin-bottom: 10px; }
+            .row { display:flex; justify-content:space-between; margin-bottom:8px; }
+            .divider { border-top:1px solid #ddd; margin:10px 0; }
+          </style>
+        </head>
+        <body>
+          ${container.outerHTML}
+          ${details.outerHTML}
+          ${banner.outerHTML}
+        </body>
+        </html>
+      `;
+    }
 
-document.getElementById("cuenta-origen").textContent =
-"****" + cuentaOrigen;
-</script>
+    // Descargar completo
+    descargarBtn.addEventListener('click', () => {
+      const htmlComprobante = generarHTMLComprobante();
+      const blob = new Blob([htmlComprobante], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `comprobante_${new Date().getTime()}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Compartir completo
+    compartirBtn.addEventListener('click', async () => {
+      const htmlComprobante = generarHTMLComprobante();
+      const blob = new Blob([htmlComprobante], { type: 'text/html' });
+      const file = new File([blob], `comprobante_${new Date().getTime()}.html`, { type: 'text/html' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: 'Comprobante de Transferencia',
+            files: [file],
+          });
+          alert('Comprobante compartido correctamente');
+        } catch (err) {
+          console.error(err);
+          alert('Error al compartir');
+        }
+      } else {
+        alert('Tu navegador no soporta compartir archivos. Puedes descargarlo.');
+      }
+    });
+  </script>
 </body>
-  </html>
+</html>
