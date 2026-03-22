@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Centro de Ayuda</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#01256f">
+
+<!-- Font Awesome para iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ===== Centro de Ayuda Azul ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f5f7fa;
+  color: #333;
+}
+
+/* Header azul */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #01256f;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header i {
+  font-size: 20px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+/* Container general */
+.container {
+  padding: 20px;
+}
+
+/* Cards */
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: flex-start;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card i {
+  font-size: 30px;
+  color: #01256f;
+  margin-right: 15px;
+}
+
+.card-content h3 {
+  font-size: 16px;
+  color: #01256f;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.card-content p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Botones */
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  background-color: #01256f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #001f4d;
+}
+
+.btn-create {
+  background-color: #ff7b00;
+}
+
+.btn-create:hover {
+  background-color: #e66a00;
+}
+
+/* Video */
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  margin-top: 10px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 10px;
+  max-width: 350px;
+  text-align: center;
+  animation: appear 0.3s ease;
+}
+
+.modal-content h2 {
+  margin-bottom: 10px;
+  color: #01256f;
+}
+
+.modal-content p {
+  font-size: 14px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+@keyframes appear {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header">
+  <i class="fa fa-arrow-left" onclick="history.back()"></i>
+  Centro de Ayuda
+</div>
+
+<div class="container">
+
+  <!-- Video tutorial -->
+  <div class="card">
+    <i class="fa-solid fa-circle-play"></i>
+    <div class="card-content">
+      <h3>¿Cómo funciona la aplicación?</h3>
+      <p>Visualiza el siguiente video para aprender a usar la app correctamente:</p>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/vOWPPGpbUOY" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crear cuenta -->
+  <div class="card">
+    <i class="fa-solid fa-user-plus"></i>
+    <div class="card-content">
+      <h3>Crear una cuenta</h3>
+      <p>Regístrate para empezar a usar la app de manera segura.</p>
+      <button class="btn btn-create" onclick="location.href='inicio'">
+        Crear cuenta
+      </button>
+    </div>
+  </div>
+
+  <!-- Cambiar correo -->
+  <div class="card">
+    <i class="fa-solid fa-envelope"></i>
+    <div class="card-content">
+      <h3>Cambiar correo electrónico</h3>
+      <p>Actualiza tu correo en la sección de "Mis datos".</p>
+    </div>
+  </div>
+
+  <!-- Actualizar información -->
+  <div class="card">
+    <i class="fa-solid fa-id-card"></i>
+    <div class="card-content">
+      <h3>Actualizar información</h3>
+      <p>Modifica tus datos personales en la sección "Mis datos".</p>
+    </div>
+  </div>
+
+  <!-- Soporte -->
+  <div class="card">
+    <i class="fa-solid fa-headset"></i>
+    <div class="card-content">
+      <h3>Soporte y consultas</h3>
+      <p>Estamos disponibles para ayudarte en cualquier momento.</p>
+      <button class="btn" onclick="abrirSoporte()">
+        Contactar soporte
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal bienvenida -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2>👋 Bienvenido</h2>
+    <p>Aquí encontrarás indicaciones para usar la aplicación correctamente.</p>
+    <button class="btn" onclick="cerrarModal()">Entendido</button>
+  </div>
+</div>
+
+<script>
+// Funciones modal
+function abrirModal() {
+  document.getElementById('modal').style.display = 'flex';
+}
+function cerrarModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// Abrir soporte
+function abrirSoporte() {
+  window.location.href = "mailto:soporte@tuapp.com";
+}
+
+// Mostrar modal al entrar
+window.addEventListener('load', abrirModal);
+</script>
+
+</body>
+</html>
