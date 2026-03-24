@@ -5,53 +5,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Iniciar sesión</title>
+
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#01256f" />
 
 <link rel="icon" type="images/png" href="images/app_icon_xxxhdpi.png">
+
 <style>
 
 *{
 box-sizing:border-box;
-font-family:Segoe UI;
+font-family:Segoe UI, sans-serif;
 margin:0;
 padding:0;
 }
 
 body{
-background:#f4f6fb;
+
+background:linear-gradient(135deg,#01256f,#0033a0,#0050ff);
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
+
 }
+
+
+/* card */
 
 .card{
 
 width:95%;
 max-width:380px;
 background:#fff;
-padding:25px;
-border-radius:15px;
-box-shadow:0 5px 20px rgba(0,0,0,.15);
+padding:30px 25px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+animation:show .4s ease;
 
+}
+
+@keyframes show{
+from{
+transform:scale(.9);
+opacity:.5;
+}
+to{
+transform:scale(1);
+opacity:1;
+}
 }
 
 h2{
+
 text-align:center;
-margin-bottom:20px;
+margin-bottom:25px;
 color:#0033a0;
+font-weight:600;
+
 }
+
+
+/* inputs */
 
 input{
 
 width:100%;
-padding:12px;
+padding:14px;
 margin-bottom:15px;
 border:none;
-border-bottom:1px solid #aaa;
+border-radius:8px;
+background:#f2f4fa;
+font-size:15px;
+outline:none;
+transition:.2s;
 
 }
+
+input:focus{
+
+background:#e8ecff;
+box-shadow:0 0 0 2px #0050ff;
+
+}
+
+
+/* button */
 
 button{
 
@@ -59,25 +98,72 @@ width:100%;
 padding:14px;
 border:none;
 border-radius:10px;
-background:#ff6600;
+background:linear-gradient(90deg,#ff6600,#ff8c00);
 color:#fff;
 font-size:16px;
 margin-top:5px;
+cursor:pointer;
+transition:.2s;
+
+}
+
+button:hover{
+
+transform:scale(1.03);
 
 }
 
 button.gray{
-background:#bbb;
+
+background:#ccc;
 color:#000;
+
 }
+
+
+/* links */
 
 .link{
 
 text-align:center;
-margin-top:10px;
+margin-top:12px;
 color:#0033a0;
 cursor:pointer;
 font-size:14px;
+transition:.2s;
+
+}
+
+.link:hover{
+
+color:#ff6600;
+text-decoration:underline;
+
+}
+
+
+/* crear cuenta */
+
+.crear{
+
+text-align:center;
+margin-top:6px;
+font-size:14px;
+color:#444;
+
+}
+
+.crear span{
+
+color:#ff6600;
+cursor:pointer;
+font-weight:600;
+
+}
+
+.crear span:hover{
+
+text-decoration:underline;
 
 }
 
@@ -117,7 +203,7 @@ animation:spin 1s linear infinite;
 
 background:#fff;
 padding:20px;
-border-radius:10px;
+border-radius:12px;
 text-align:center;
 width:90%;
 max-width:320px;
@@ -152,6 +238,14 @@ Reenviar verificación
 
 <div class="link" id="olvide">
 Olvidé mi contraseña
+</div>
+
+<!-- NUEVO -->
+<div class="crear">
+¿No tienes cuenta?
+<span id="crearCuenta">
+Crear cuenta
+</span>
 </div>
 
 </div>
@@ -217,34 +311,29 @@ from
 
 const firebaseConfig={
 apiKey: "AIzaSyDuF8oL5UWaIXw_vt_HdAsiKC4I3irj8rM",
-    authDomain: "bcpf-ba4cd.firebaseapp.com",
-    databaseURL: "https://bcpf-ba4cd-default-rtdb.firebaseio.com",
-    projectId: "bcpf-ba4cd",
-    storageBucket: "bcpf-ba4cd.firebasestorage.app",
-    messagingSenderId: "1073055247962",
-    appId: "1:1073055247962:web:88f888730ee3577dcb7263",
-    measurementId: "G-TCFHF3FMKQ"
+authDomain: "bcpf-ba4cd.firebaseapp.com",
+projectId: "bcpf-ba4cd",
+storageBucket: "bcpf-ba4cd.appspot.com",
+messagingSenderId: "1073055247962",
+appId: "1:1073055247962:web:88f888730ee3577dcb7263"
 };
 
 
 const app=initializeApp(firebaseConfig);
-
 const auth=getAuth(app);
 
 
 const loading=document.getElementById("loading");
-
 const msgModal=document.getElementById("msgModal");
-
 const msgText=document.getElementById("msgText");
-
 const reenviar=document.getElementById("reenviar");
 
 const correoInput=document.getElementById("correo");
-
 const passwordInput=document.getElementById("password");
 
 const resetModal=document.getElementById("resetModal");
+
+const crearCuenta=document.getElementById("crearCuenta");
 
 let currentUser=null;
 
@@ -252,17 +341,13 @@ let currentUser=null;
 function msg(t){
 
 msgText.textContent=t;
-
 msgModal.style.display="flex";
 
 }
 
 ok.onclick=()=>{
-
 msgModal.style.display="none";
-
 };
-
 
 
 loginBtn.onclick=async()=>{
@@ -271,10 +356,8 @@ const correo=correoInput.value.trim();
 const pass=passwordInput.value.trim();
 
 if(!correo || !pass){
-
 msg("Completa datos");
 return;
-
 }
 
 loading.style.display="flex";
@@ -289,119 +372,48 @@ pass
 
 const user=cred.user;
 
-currentUser=user;
-
 await user.reload();
 
 if(!user.emailVerified){
 
 loading.style.display="none";
-
 msg("Debes verificar tu correo");
-
 reenviar.style.display="block";
-
 return;
 
 }
-
 
 loading.style.display="none";
 
 msg("Bienvenido");
 
 setTimeout(()=>{
-
 window.location.href="panel.html";
-
 },1000);
-
 
 }catch(e){
 
 loading.style.display="none";
-
 msg(e.message);
 
 }
-
-};
-
-
-
-reenviar.onclick=async()=>{
-
-if(!currentUser){
-
-msg("Inicia sesión primero");
-return;
-
-}
-
-loading.style.display="flex";
-
-await sendEmailVerification(currentUser);
-
-loading.style.display="none";
-
-msg("Correo enviado");
 
 };
 
 
 
 olvide.onclick=()=>{
-
 resetModal.style.display="flex";
-
 };
-
 
 cerrarReset.onclick=()=>{
-
 resetModal.style.display="none";
-
 };
 
 
-enviarReset.onclick=async()=>{
-
-const correo=document
-.getElementById("resetCorreo")
-.value.trim();
-
-if(!correo){
-
-msg("Escribe el correo");
-return;
-
-}
-
-loading.style.display="flex";
-
-try{
-
-await sendPasswordResetEmail(
-auth,
-correo
-);
-
-loading.style.display="none";
-
-resetModal.style.display="none";
-
-msg("Se envió el enlace");
-
-}catch(e){
-
-loading.style.display="none";
-
-msg(e.message);
-
-}
-
+crearCuenta.onclick=()=>{
+window.location.href="registro.html";
 };
-
 
 </script>
 
